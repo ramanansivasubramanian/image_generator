@@ -1,32 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
+<style>
+    * {
+        box-sizing: border-box;
+    }
+    
+    /* Create two equal columns that floats next to each other */
+    .column {
+        float: left;
+        width: 50%;
+        padding: 10px;
+        height: 300px; /* Should be removed. Only for demonstration */
+    }
+    
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+</style>
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tech Immersion: Image Generator</title>
 </head>
+
 <body>
     <h1>Tech Immersion: Image Generator</h1>
     <p>I intend to use this page for demonstrating observability in SRE</p>
-
-    <form action="{{ url_for('search')}}" method="post">
-        <label for="searchText">What image do you want to generate? </label>
-        <input type="text" id="searchText" name="searchText"><br><br>
-        <input type="submit" value="Search">
-    </form>
-
+    <div class="row">
+        <div class="column" style="background-color:#aaa;">
+            <form action="{{ url_for('search')}}" method="post">
+                <label for="searchText">What image do you want to generate? </label>
+                <input type="text" id="searchText" name="searchText"><br><br>
+                <input type="submit" value="Search">
+            </form>
+            <br><br>
+            <div>
+                {% if search %}
+                    {% if search.output_url %}
+                    <h2>{{search.search_text}}</h2>
+                    <img src="{{search.output_url}}" />
+                    {% endif %}
+                    {% if search.err %}
+                    <p>There was an error generating the image. Reason: {{search.err}}</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="column" style="background-color:#bbb;">
+            <form action="{{ url_for('anagrams')}}" method="post">
+                <label for="searchText">What image do you want to generate? </label>
+                <input type="text" id="searchText" name="searchText"><br><br>
+                <input type="submit" value="Search">
+            </form>
+            <br><br>
+            <div>
+                {% if anagrams %}
+                <p>List of Anagrams:</p>
+                <p>{{anagrams}}</p>
+                {% endif %} 
+            </div>
+        </div>
+    </div>
     <br><br>
-    {% if output %}
-        {% if output.output_url %}
-        <h2>{{output.search_text}}</h2>
-        <img src="{{output.output_url}}" />
-        {% endif %}
-        {% if output.err %}
-        <p>There was an error generating the image. Reason: {{output.err}}</p>
-        {% endif %}
-    {% endif %}
-
     {% if error %}
     <p>{{error}}</p>
     {% endif %} 
